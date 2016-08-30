@@ -11,11 +11,15 @@ const parseAge = text => text
 
 program
   .command('list')
-  .option('-u, --user [name]', 'limit results to the given user', '*')
+  .option('-u, --user <name>', 'limit results to the given user', '*')
   .option('-m, --merged [branch]', 'limit to branches already merged with origin/master or given branch', false)
-  .option('-a, --age [value]', 'limit to branches older that the given number of weeks', parseAge, false)
+  .option('-a, --age <value>', 'limit to branches older that the given duration (per momentjs subtract)', parseAge, false)
   .action(validate(require('./command/list')));
 
 program
   .version(require('./package.json').version)
   .parse(process.argv);
+
+if (!process.argv.slice(2).length) {
+  program.help();
+}

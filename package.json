@@ -5,6 +5,11 @@
   "bin": "index.js",
   "scripts": {},
   "author": "bholloway",
+  "keywords": [
+    "git",
+    "branch",
+    "management"
+  ],
   "repository": {
     "type": "git",
     "url": "git://github.com/bholloway/branch-fu.git"

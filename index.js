@@ -11,8 +11,8 @@ const parseAge = text => text
 
 program
   .command('list')
-  .option('-u, --user [value]', 'user to limit results to', '*')
-  .option('-m, --merged', 'limit to branches already merged with master', false)
+  .option('-u, --user [name]', 'limit results to the given user', '*')
+  .option('-m, --merged [branch]', 'limit to branches already merged with origin/master or given branch', false)
   .option('-a, --age [value]', 'limit to branches older that the given number of weeks', parseAge, false)
   .action(validate(require('./command/list')));
 

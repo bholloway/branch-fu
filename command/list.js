@@ -3,6 +3,7 @@
 function list(options) {
   const Q = require('q');
   const moment = require('moment');
+  const flatten = require('lodash.flattendeep');
   const Spinner = require('cli-spinner').Spinner;
 
   const listRemote = require('../lib/list-remote');
@@ -36,10 +37,14 @@ function list(options) {
     .then(results => {
       spinner.stop(true);
       []
+        .concat(flatten(
+          results.map((v, i, array) => {
+            const isChange = (i === 0) || (v.user !== array[i - 1].user);
+            return isChange ? ['', v.user, `  ${v.branch}`] : `  ${v.branch}`
+          })
+        ))
         .concat('')
-        .concat(results.map(v => `${v.user}:${v.branch}`))
-        .concat('')
-        .concat(`${results.length} results`)
+        .concat(`${results.length} branches`)
         .map(v => console.log(v));
     })
     .catch(error => error);

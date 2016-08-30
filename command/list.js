@@ -6,31 +6,34 @@ function list(options) {
   const flatten = require('lodash.flattendeep');
   const Spinner = require('cli-spinner').Spinner;
 
+  const fetch = require('../lib/fetch');
   const listRemote = require('../lib/list-remote');
   const lastContributer = require('../lib/last-contributer');
 
   const now = moment();
-  const dateCutoff = !!options.age && options.age.length && now.subtract.apply(now, options.age);
+  const cutoffDate = !!options.stale && options.stale.length && now.subtract.apply(now, options.stale);
   const mergedWith = (typeof options.merged === 'string') && options.merged || !!options.merged && 'origin/master';
 
-  console.log(`user:                  "${options.user}"`);
-  console.log(`merged:                ${mergedWith && ('"' + mergedWith + '"')}`);
-  console.log(`date cutoff (per age): ${dateCutoff}`);
+  console.log(`fetch:       ${options.fetch}`);
+  console.log(`user:        "${options.user}"`);
+  console.log(`merged:      ${mergedWith && ('"' + mergedWith + '"')}`);
+  console.log(`stale since: ${cutoffDate}`);
 
   const testUser = candidate =>
     ((options.user === '*') || (candidate.toLowerCase().indexOf(options.user.toLowerCase()) >= 0));
 
-  const testAge = candidate =>
-    (!dateCutoff || (candidate.valueOf() <= dateCutoff.valueOf()));
+  const testStale = candidate =>
+    (!cutoffDate || (candidate.valueOf() <= cutoffDate.valueOf()));
 
   const eachBranch = branch =>
     lastContributer(branch)
-      .then(contribution => testUser(contribution.user) && testAge(contribution.date) && contribution);
+      .then(contribution => testUser(contribution.user) && testStale(contribution.date) && contribution);
 
   const spinner = new Spinner();
   spinner.start();
 
-  return listRemote(mergedWith)
+  return (options.fetch ? fetch() : Q.when())
+    .then(() => listRemote(mergedWith))
     .then(branches => Q.all(branches.map(eachBranch)))
     .then(results => results.reduce((reduced, v) => reduced.concat(v).filter(Boolean), []))
     .then(results => results.sort((a, b) => a.user.localeCompare(b.user)))

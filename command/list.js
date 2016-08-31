@@ -9,6 +9,7 @@ function list(options) {
   const fetch = require('../lib/fetch');
   const listRemote = require('../lib/list-remote');
   const lastContributer = require('../lib/last-contributer');
+  const dedupeXbyY = require('../lib/dedupe-x-by-y');
 
   const now = moment();
   const cutoffDate = !!options.stale && options.stale.length && now.subtract.apply(now, options.stale);
@@ -29,6 +30,26 @@ function list(options) {
     lastContributer(branch)
       .then(contribution => testUser(contribution.user) && testStale(contribution.date) && contribution);
 
+  const getReport = results => {
+    const report = flatten(
+      results.map((v, i, array) => {
+        const isChange = (i === 0) || (v.user !== array[i - 1].user);
+        return isChange ? ['', `${v.user} <${v.email}>`, `  ${v.branch}`] : `  ${v.branch}`
+      })
+    );
+
+    const emails = results
+      .map(v => `"${v.user}" <${v.email}>`)
+      .filter((v, i, array) => (array.indexOf(v) === i));
+
+    return []
+      .concat(report)
+      .concat('')
+      .concat(`${results.length} branches`)
+      .concat('')
+      .concat(emails.join('; '));
+  };
+
   const spinner = new Spinner();
   spinner.start();
 
@@ -36,20 +57,13 @@ function list(options) {
     .then(() => listRemote(mergedWith))
     .then(branches => Q.all(branches.map(eachBranch)))
     .then(results => results.reduce((reduced, v) => reduced.concat(v).filter(Boolean), []))
+    .then(results => dedupeXbyY('user', 'email')(results))
     .then(results => results.sort((a, b) => a.user.localeCompare(b.user)))
     .then(results => {
       spinner.stop(true);
-      []
-        .concat(flatten(
-          results.map((v, i, array) => {
-            const isChange = (i === 0) || (v.user !== array[i - 1].user);
-            return isChange ? ['', v.user, `  ${v.branch}`] : `  ${v.branch}`
-          })
-        ))
-        .concat('')
-        .concat(`${results.length} branches`)
-        .map(v => console.log(v));
+      return results;
     })
+    .then(results => getReport(results).map(v => console.log(v)))
     .catch(error => error);
 }
 

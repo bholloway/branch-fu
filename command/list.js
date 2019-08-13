@@ -5,12 +5,15 @@ function list(options) {
   const moment = require('moment');
   const flatten = require('lodash.flattendeep');
   const Spinner = require('cli-spinner').Spinner;
+  const promiseLimit = require('promise-limit');
+  const compose = require('compose-function');
 
   const fetch = require('../lib/fetch');
   const listRemote = require('../lib/list-remote');
   const lastContributer = require('../lib/last-contributer');
   const dedupeXbyY = require('../lib/dedupe-x-by-y');
 
+  const limiter = promiseLimit(16);
   const now = moment();
   const cutoffDate = !!options.stale && options.stale.length && now.subtract.apply(now, options.stale);
   const mergedWith = (typeof options.merged === 'string') && options.merged || !!options.merged && 'origin/master';
@@ -55,7 +58,7 @@ function list(options) {
 
   return (options.fetch ? fetch() : Q.when())
     .then(() => listRemote(mergedWith))
-    .then(branches => Q.all(branches.map(eachBranch)))
+    .then(branches => Q.all(limiter.map(branches, eachBranch)))
     .then(results => results.reduce((reduced, v) => reduced.concat(v).filter(Boolean), []))
     .then(results => dedupeXbyY('user', 'email')(results))
     .then(results => results.sort((a, b) => a.user.localeCompare(b.user)))

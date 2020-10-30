@@ -42,3 +42,11 @@ Append a list of emails for a `bcc` mail out.
 ```
 branch-fu report -f -m "origin/master" -p "\!origin/release/*"
 ```
+
+### list
+
+List remote branches that match the criteria.
+
+```
+branch-fu list -f -m "origin/master" -p "\!origin/release/*"
+```

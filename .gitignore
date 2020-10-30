@@ -1,3 +1,9 @@
 /.idea
 /npm-debug.log*
 /node_modules
+/program.js
+!index.js
+/*.js
+/*.map
+/**/*.js
+/**/*.map

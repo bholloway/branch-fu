@@ -5,10 +5,10 @@ import sequence from 'p-pipe';
 import {init, maybeFetch, getBranches, filterBranches, segment} from './common';
 import { lift, liftTap } from '../lib/fp';
 import dudupeXbyY from '../lib/dedupe-x-by-y';
-import type {LastContributor} from '../lib/types';
+import {LastContributor} from '../lib/types';
 
 const report = segment<LastContributor>(
-  lift(dudupeXbyY('user', 'email')),
+  lift(dudupeXbyY<LastContributor>('user', 'email')),
   lift(results => results.slice().sort((a, b) => a.user.localeCompare(b.user))),
   lift(results => {
     const lines = results

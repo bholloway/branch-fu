@@ -4,6 +4,12 @@ import ui from '../lib/ui';
 
 export type Matcher = (((branch: string) => boolean) & {toJSON: () => string}) | false
 
+export type Program = {
+  parent?: Program,
+  options: Array<{defaultValue: unknown, long:string, bool: boolean}>,
+  [key: string]: unknown
+};
+
 export type Options = {
   fetch: boolean,
   merged: string | false,

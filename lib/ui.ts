@@ -1,8 +1,8 @@
 'use strict';
 
+import { Spinner } from 'cli-spinner';
+
 export default (stream: NodeJS.WritableStream, labelLength: number, progressInterval: number) => {
-  const process = require('process');
-  const { Spinner } = require('cli-spinner');
   const spinner = new Spinner({ stream });
 
   const logFn = (text: string) =>
@@ -31,7 +31,7 @@ export default (stream: NodeJS.WritableStream, labelLength: number, progressInte
     },
     progress: (n = 0, m = 0) => {
       if (n === 0 && m === 0) {
-        spinner.clearLine();
+        spinner.clearLine(stream);
         spinner.setSpinnerTitle('%s');
       } else if (n % progressInterval === 0) {
         spinner.setSpinnerTitle(`%s ${formatFraction(n,m)} ${mem()}`);

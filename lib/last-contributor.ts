@@ -1,7 +1,7 @@
 'use strict';
 
 import git from './git';
-import type {LastContributor} from './types';
+import {LastContributor} from './types';
 
 export default (branch: string): Promise<LastContributor> =>
   git('show', '--format="%ai | %an | %ae"', '--name-only', branch)

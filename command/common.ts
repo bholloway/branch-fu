@@ -38,6 +38,9 @@ export const getBranches = segment(
 );
 
 export const filterBranches = segment<string>(
+    lift((branches, {merged}) =>
+        merged ? branches.filter((branch) => branch !== merged) : branches
+    ),
     lift((branches, {pattern}) =>
         pattern ? branches.filter(pattern) : branches
     ),

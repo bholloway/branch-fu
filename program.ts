@@ -4,7 +4,7 @@ import picomatch from 'picomatch';
 import program from 'commander';
 import ms from 'ms';
 
-import {count, report} from './command';
+import {count, report, list} from './command';
 import {Program, Matcher} from './lib/types';
 import {version} from './package.json';
 
@@ -72,6 +72,12 @@ program
   .description('list remote branches, group by user, and append all user emails')
   .usage('branch-fu report -f -m "origin/master" -p "!origin/release/*"')
   .action(withOptions(report));
+
+program
+    .command('list')
+    .description('list remote branches in alphabetical order')
+    .usage('branch-fu list -f -m "origin/master" -p "!origin/release/*"')
+    .action(withOptions(list));
 
 program
   .parse(process.argv);

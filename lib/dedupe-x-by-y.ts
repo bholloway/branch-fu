@@ -2,7 +2,8 @@
 
 export default <T extends {[key: string]: unknown}>(x: string, y: string) => (array: ReadonlyArray<T>) => {
   const lookupXbyY = array
-    .reduce((reduced: {[key: string]: string}, value: T) => {
+    .map(v => Object.fromEntries(Object.entries(v).map(([k, v]) => [k, String(v)])))
+    .reduce<{[key: string]: string}>((reduced, value) => {
       const existingX = String(value[x]);
       const existingY = String(value[y]);
 

@@ -4,10 +4,14 @@
     "noImplicitAny": true,
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
+    "resolveJsonModule": true,
     "module": "commonjs",
     "target": "es2018",
     "lib": [
       "es2019"
+    ],
+    "typeRoots": [
+      "../node_modules/@types"
     ]
   }
 }

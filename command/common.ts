@@ -8,7 +8,7 @@ import { pure, lift, liftTap } from '../lib/fp';
 import gitFetch from '../lib/fetch';
 import listRemote from '../lib/list-remote';
 import testBranch from '../lib/test-branch';
-import type {Value, LastContributor} from '../lib/types';
+import {Value, LastContributor} from '../lib/types';
 
 export const init = pure(({fetch, merged, pattern, stale, user}) => {
     const { log, ...rest } = ui(process.stderr, 18, 10);

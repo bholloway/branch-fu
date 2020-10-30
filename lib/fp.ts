@@ -1,6 +1,6 @@
 'use strict';
 
-import type {Options, Context, Value} from './types';
+import {Options, Context, Value} from './types';
 
 export const pure = <T>(fn: (input: Options) => Context) => (input: Options): Promise<Context> =>
   Promise.resolve(fn(input))

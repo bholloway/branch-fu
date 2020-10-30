@@ -1,4 +1,6 @@
 {
+  "transpileOnly": true,
+  "ignore": [],
   "compilerOptions": {
     "sourceMap": true,
     "noImplicitAny": true,

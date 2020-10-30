@@ -1,6 +1,6 @@
 {
   "name": "branch-fu",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "description": "Command-line utility for cleaning up git branches",
   "bin": "index.js",
   "scripts": {},
